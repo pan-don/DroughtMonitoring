@@ -42,7 +42,7 @@ async function loadHelpContent() {
 
 /**
  * Renders help content HTML for the specified project
- * @param {string} project - Project type: 'drought', 'organic', or 'dataviz'
+ * @param {string} project - Project type (default: 'drought')
  * @returns {string} HTML string for help content
  */
 function renderHelpContent(project) {
@@ -75,7 +75,7 @@ function renderHelpContent(project) {
     });
     html += `</ul></div>`;
     
-    // Indices/Parameters section (for drought and organic)
+    // Indices/Parameters section
     if (content.indices) {
         html += `<div class="help-section-block">`;
         html += `<p class="help-section-title"><strong>${content.indices.title}</strong></p>`;
@@ -85,19 +85,6 @@ function renderHelpContent(project) {
             html += `<dd>${item.description}</dd>`;
         });
         html += `</dl></div>`;
-    }
-    
-    // Data Format section (for dataviz)
-    if (content.dataFormat) {
-        html += `<div class="help-section-block">`;
-        html += `<p class="help-section-title"><strong>${content.dataFormat.title}</strong></p>`;
-        html += `<table class="help-data-format-table">`;
-        html += `<thead><tr><th>Column</th><th>Format</th><th>Description</th></tr></thead>`;
-        html += `<tbody>`;
-        content.dataFormat.columns.forEach(col => {
-            html += `<tr><td><code>${col.name}</code></td><td>${col.format}</td><td>${col.description}</td></tr>`;
-        });
-        html += `</tbody></table></div>`;
     }
     
     // Tips section
@@ -306,6 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAnalysisSection();
     // Initialize table previews to show placeholders
     renderTablePreview(null);
+    // Initialize Project UI
+    initProjectUI();
 });
 
 // ============================================================================
@@ -1007,11 +996,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.classList.add('active');
             // Update selected index
             currentSelectedIndex = e.target.dataset.index;
-            // Update visualization based on index type and project
+            // Update visualization based on index type
             if (currentSelectedIndex === 'DROUGHT') {
-                updateDroughtChart();
-            } else if (currentSelectedIndex === 'PREDICTION') {
-                // Drought prediction visualization
                 updateDroughtChart();
             } else {
                 updateDistributionChart(currentSelectedIndex);
@@ -1030,12 +1016,6 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function getDisplayName(colName) {
     const displayNames = {
-        // Organic indices with full names
-        'N': 'Nitrogen',
-        'P': 'Phosphorus',
-        'K': 'Potassium',
-        'PH': 'PH',
-        'SOM': 'SOM',
         // Coordinates
         'longitude': 'Longitude',
         'latitude': 'Latitude',
@@ -1077,10 +1057,8 @@ function renderTablePreview(data) {
     // Hide placeholder icon (don't remove from DOM)
     if (tablePlaceholder) tablePlaceholder.classList.add('hidden');
     
-    // Define columns to show in table based on current project
-    const droughtColumns = ['NDVI', 'NDWI', 'NDDI', 'EVI', 'LST'];
-    const organicColumns = ['N', 'P', 'K', 'PH', 'SOM'];
-    const indexColumns = droughtColumns;  // Only drought columns
+    // Define columns to show in table
+    const indexColumns = ['NDVI', 'NDWI', 'NDDI', 'EVI', 'LST'];
     const availableColumns = indexColumns.filter(col => col in data[0]);
     
     // Add coordinate columns (longitude, latitude) if available
@@ -1132,11 +1110,6 @@ function renderTablePreview(data) {
                 if (value === 'low drought') colorClass = 'drought-low';
                 else if (value === 'medium drought') colorClass = 'drought-medium';
                 else if (value === 'high drought') colorClass = 'drought-high';
-                tableHTML += `<td class="${colorClass}">${formatted}</td>`;
-            } else if (col === 'SOIL_TYPE') {
-                let colorClass = '';
-                if (value === 'Non-Organic') colorClass = 'soil-non-organic';
-                else if (value === 'Organic') colorClass = 'soil-organic';
                 tableHTML += `<td class="${colorClass}">${formatted}</td>`;
             } else {
                 tableHTML += `<td>${formatted}</td>`;
@@ -1354,13 +1327,9 @@ function initializeAnalysisSection() {
     const chartPlaceholder = document.getElementById('chart-placeholder');
     const statsPlaceholder = document.getElementById('stats-placeholder');
     const indexButtonsContainer = document.getElementById('index-buttons');
-    const indexButtons = document.querySelectorAll('.index-btn:not(.dataviz-btn)');  // Original HTML buttons only
+    const indexButtons = document.querySelectorAll('.index-btn');
     const canvas = document.getElementById('distributionChart');
     const statItems = document.querySelectorAll('.stat-item');
-    
-    // Remove dataviz dynamic buttons when switching projects
-    const datavizBtns = indexButtonsContainer?.querySelectorAll('.dataviz-btn');
-    datavizBtns?.forEach(btn => btn.remove());
     
     // Determine if we have data for drought analysis
     const hasData = extractedData && extractedData.length > 0;
@@ -1379,25 +1348,18 @@ function initializeAnalysisSection() {
         return;
     }
     
-    // For dataviz project, use renderDataVizCharts instead
     // Hide placeholders and show content for drought analysis
     if (buttonsPlaceholder) buttonsPlaceholder.classList.add('hidden');
     if (chartPlaceholder) chartPlaceholder.classList.add('hidden');
     if (statsPlaceholder) statsPlaceholder.classList.add('hidden');
     
     // Show actual content - only drought indices
-    const droughtIndices = ['NDVI', 'NDWI', 'NDDI', 'EVI', 'LST'];
-    const organicIndices = ['N', 'P', 'K', 'PH', 'SOM'];
-    const projectIndices = droughtIndices;  // Only drought indices
+    const projectIndices = ['NDVI', 'NDWI', 'NDDI', 'EVI', 'LST'];
     
     indexButtons.forEach(btn => {
         const btnIndex = btn.dataset.index;
-        // Show DROUGHT button only for drought project with prediction
-        if (btnIndex === 'DROUGHT' && currentProject === 'drought' && hasPrediction) {
-            btn.classList.remove('hidden');
-        }
-        // Show PREDICTION button only for organic project with prediction
-        else if (btnIndex === 'PREDICTION' && currentProject === 'organic' && hasPrediction) {
+        // Show DROUGHT button if prediction is available
+        if (btnIndex === 'DROUGHT' && hasPrediction) {
             btn.classList.remove('hidden');
         }
         // Show project-specific index buttons if data exists
@@ -1417,8 +1379,8 @@ function initializeAnalysisSection() {
     if (canvas) canvas.classList.remove('hidden');
     statItems.forEach(item => item.classList.remove('hidden'));
     
-    // Set first visible button as active (exclude dataviz buttons)
-    const allOriginalButtons = document.querySelectorAll('.index-btn:not(.dataviz-btn)');
+    // Set first visible button as active
+    const allOriginalButtons = document.querySelectorAll('.index-btn');
     const firstVisibleBtn = Array.from(allOriginalButtons).find(btn => !btn.classList.contains('hidden'));
     if (firstVisibleBtn) {
         allOriginalButtons.forEach(b => b.classList.remove('active'));
@@ -1556,131 +1518,6 @@ function updateDroughtChart() {
 }
 
 // ============================================================================
-// CHART VISUALIZATION - ORGANIC PIE CHART
-// ============================================================================
-/**
- * Creates pie chart showing organic/non-organic distribution
- * Only available after prediction has been run
- */
-function updateOrganicChart() {
-    if (!hasPrediction || !predictionData || predictionData.length === 0) {
-        updateLog('No soil classification data - run prediction first');
-        return;
-    }
-    
-    const canvas = document.getElementById('distributionChart');
-    if (!canvas || typeof Chart === 'undefined') {
-        return;
-    }
-    
-    // Count organic classes
-    const organicCounts = {
-        'Non-Organic': 0,
-        'Organic': 0
-    };
-    
-    predictionData.forEach(row => {
-        const prediction = row['prediction'];
-        if (prediction === 0) {
-            organicCounts['Non-Organic']++;
-        } else if (prediction === 1) {
-            organicCounts['Organic']++;
-        }
-    });
-    
-    // Prepare data for pie chart
-    const labels = Object.keys(organicCounts);
-    const values = Object.values(organicCounts);
-    const colors = ['#a9a9a9', '#228b22']; // Gray for Non-Organic, Green for Organic (match map layer)
-    
-    // Update statistics display with class counts
-    document.getElementById('stat-mean').parentElement.querySelector('.stat-label').textContent = 'Non-Organic:';
-    document.getElementById('stat-mean').textContent = organicCounts['Non-Organic'];
-    
-    document.getElementById('stat-std').parentElement.querySelector('.stat-label').textContent = 'Organic:';
-    document.getElementById('stat-std').textContent = organicCounts['Organic'];
-    
-    document.getElementById('stat-min').parentElement.querySelector('.stat-label').textContent = 'Total:';
-    document.getElementById('stat-min').textContent = predictionData.length;
-    
-    document.getElementById('stat-max').parentElement.querySelector('.stat-label').textContent = 'Organic %:';
-    const organicPercent = ((organicCounts['Organic'] / predictionData.length) * 100).toFixed(1);
-    document.getElementById('stat-max').textContent = organicPercent + '%';
-    
-    // Destroy existing chart
-    if (distributionChart) {
-        distributionChart.destroy();
-        distributionChart = null;
-    }
-    
-    // Create pie chart with professional styling
-    const ctx = canvas.getContext('2d');
-    const isDark = !document.documentElement.hasAttribute('data-theme') || document.documentElement.getAttribute('data-theme') === 'dark';
-    const labelColor = isDark ? '#f5f9ff' : '#1a2e29';
-    const tooltipBg = isDark ? 'rgba(8, 18, 38, 0.95)' : 'rgba(255, 255, 255, 0.98)';
-    const tooltipTitleColor = isDark ? '#f5f9ff' : '#1a2e29';
-    const tooltipBodyColor = isDark ? '#94a9c4' : '#4a5f59';
-    const tooltipBorderColor = isDark ? 'rgba(148, 169, 196, 0.3)' : 'rgba(10, 175, 107, 0.25)';
-    
-    const chartConfig = {
-        type: 'pie',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: values,
-                backgroundColor: colors,
-                borderColor: isDark ? '#081226' : '#ffffff',
-                borderWidth: 2,
-                hoverOffset: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: labelColor,
-                        padding: 15,
-                        font: { size: 12, weight: '500' },
-                        usePointStyle: true,
-                        pointStyle: 'circle'
-                    }
-                },
-                tooltip: {
-                    backgroundColor: tooltipBg,
-                    titleColor: tooltipTitleColor,
-                    bodyColor: tooltipBodyColor,
-                    borderColor: tooltipBorderColor,
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: true,
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return ` ${label}: ${value} (${percentage}%)`;
-                        }
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Organic Land Distribution',
-                    color: labelColor,
-                    font: { size: 14, weight: '600' },
-                    padding: { top: 10, bottom: 15 }
-                }
-            }
-        }
-    };
-    
-    distributionChart = new Chart(ctx, chartConfig);
-}
-
-// ============================================================================
 // STATISTICS DISPLAY UPDATE
 // ============================================================================
 /**
@@ -1705,47 +1542,13 @@ function updateStatsDisplayNormal(stats) {
 // PROJECT SELECTION & UI MANAGEMENT
 // ============================================================================
 /**
- * Updates UI elements based on current project selection
+ * Initializes UI elements for Drought project
  */
-function updateProjectUI() {
+function initProjectUI() {
     const titleElement = document.querySelector('.header-title__sub');
-    if (currentProject === 'drought') {
-        if (titleElement) titleElement.textContent = 'Drought Classification Analysis';
-    } else if (currentProject === 'organic') {
-        if (titleElement) titleElement.textContent = 'Soil Classification Analysis';
-    } else if (currentProject === 'dataviz') {
-        if (titleElement) titleElement.textContent = 'Fertilization Monitoring';
-    }
+    if (titleElement) titleElement.textContent = 'Drought Classification Analysis';
     
-    const projectName = currentProject === 'drought' ? 'Drought Monitoring System' : 
-                        currentProject === 'organic' ? 'Soil Classification System' : 
-                        'Fertilization Monitoring';
-    updateLog(`Switched to ${projectName} - Ready for analysis`);
-    
-    // Toggle visibility of project-specific LEFT sidebar sections only
-    const datavizSections = document.querySelectorAll('.sidebar-left .dataviz-section');
-    const regularSections = document.querySelectorAll('.sidebar-left .sidebar-card:not(.dataviz-section):not(#help-section)');
-    
-    // Get help scroll element
-    const helpScroll = document.getElementById('help-section-scroll');
-    
-    if (currentProject === 'dataviz') {
-        datavizSections.forEach(section => section.style.display = 'block');
-        regularSections.forEach(section => section.style.display = 'none');
-        
-        // Set height for help section in fertilization monitoring project (580px)
-        if (helpScroll) {
-            helpScroll.classList.add('dataviz-mode');
-        }
-    } else {
-        datavizSections.forEach(section => section.style.display = 'none');
-        regularSections.forEach(section => section.style.display = 'block');
-        
-        // Set height for help section in drought/soil classification projects (188px)
-        if (helpScroll) {
-            helpScroll.classList.remove('dataviz-mode');
-        }
-    }
+    updateLog(`System Ready - Ready for analysis`);
     
     // Ensure right sidebar is always visible (never hide it)
     const rightSidebar = document.querySelector('.sidebar-right');
@@ -1753,6 +1556,6 @@ function updateProjectUI() {
         rightSidebar.style.display = '';
     }
     
-    // Update help section content for current project
+    // Update help section content
     updateHelpSection();
 }
