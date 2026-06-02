@@ -1,0 +1,250 @@
+{
+  "drought": {
+    "title": "Drought Classification",
+    "description": "Analyze satellite imagery to identify and classify drought conditions using vegetation and thermal indices.",
+    "howToUse": {
+      "intro": "Follow these steps to perform drought analysis:",
+      "steps": [
+        {
+          "title": "Draw ROI",
+          "description": "Use the polygon or rectangle tool on the map to define your region of interest."
+        },
+        {
+          "title": "Set Date Range",
+          "description": "Select start and end dates to filter available Landsat 9 satellite images."
+        },
+        {
+          "title": "Adjust Cloud Cover",
+          "description": "Use the slider to set maximum acceptable cloud coverage (lower values = clearer images)."
+        },
+        {
+          "title": "Browse & Select Image",
+          "description": "Use the image slider to preview available images and select the most suitable one."
+        },
+        {
+          "title": "Extract Features",
+          "description": "Click 'Extract' to calculate vegetation indices (NDVI, NDWI, NDDI, EVI) and land surface temperature (LST) from the selected image."
+        },
+        {
+          "title": "Run Prediction",
+          "description": "Click 'Predict' to apply the machine learning model and classify drought levels."
+        },
+        {
+          "title": "Analyze Results",
+          "description": "View the classification results in the table and chart panels. Use index buttons to visualize different layers on the map."
+        }
+      ]
+    },
+    "features": [
+      "Real-time Landsat 9 satellite imagery integration",
+      "Multi-spectral vegetation index calculation (NDVI, NDWI, NDDI, EVI)",
+      "Land Surface Temperature (LST) analysis",
+      "Machine learning-based drought classification (Low, Medium, High)",
+      "Interactive map visualization with multiple layers",
+      "Data export functionality for further analysis"
+    ],
+    "indices": {
+      "title": "Indices Explained",
+      "items": [
+        {
+          "name": "NDVI",
+          "fullName": "Normalized Difference Vegetation Index",
+          "description": "Measures vegetation health. Higher values indicate healthier vegetation."
+        },
+        {
+          "name": "NDWI",
+          "fullName": "Normalized Difference Water Index",
+          "description": "Detects water content in vegetation and soil moisture levels."
+        },
+        {
+          "name": "NDDI",
+          "fullName": "Normalized Difference Drought Index",
+          "description": "Combines NDVI and NDWI to assess drought conditions directly."
+        },
+        {
+          "name": "EVI",
+          "fullName": "Enhanced Vegetation Index",
+          "description": "Improved vegetation index that reduces atmospheric interference."
+        },
+        {
+          "name": "LST",
+          "fullName": "Land Surface Temperature",
+          "description": "Surface temperature in Celsius, indicating thermal stress conditions."
+        }
+      ]
+    },
+    "tips": [
+      "Select images during dry season for more accurate drought assessment.",
+      "Smaller ROI areas provide faster processing and more detailed results.",
+      "Compare multiple dates to track drought progression over time."
+    ]
+  },
+
+  "organic": {
+    "title": "Soil Classification",
+    "description": "Classify soil types based on nutrient composition and organic matter content using adaptive machine learning.",
+    "howToUse": {
+      "intro": "Follow these steps to perform soil classification:",
+      "steps": [
+        {
+          "title": "Draw ROI",
+          "description": "Use the polygon or rectangle tool on the map to define your area of interest."
+        },
+        {
+          "title": "Set Date Range",
+          "description": "Select start and end dates to filter available satellite images for your analysis period."
+        },
+        {
+          "title": "Adjust Cloud Cover",
+          "description": "Set the maximum cloud coverage threshold for image selection."
+        },
+        {
+          "title": "Browse & Select Image",
+          "description": "Preview and select the most suitable satellite image for analysis."
+        },
+        {
+          "title": "Extract Features",
+          "description": "Click 'Extract' to derive soil nutrient indicators (N, P, K, pH, SOM) from spectral data."
+        },
+        {
+          "title": "Run Prediction",
+          "description": "Click 'Predict' to classify soil as Organic or Non-Organic using the adaptive ML model."
+        },
+        {
+          "title": "Analyze Results",
+          "description": "Review classification results in the table and distribution chart. Toggle layers to visualize different soil parameters."
+        }
+      ]
+    },
+    "features": [
+      "Satellite-derived soil nutrient estimation",
+      "Adaptive machine learning with incremental PCA",
+      "Binary soil classification (Organic vs Non-Organic)",
+      "Multi-parameter visualization (N, P, K, pH, SOM)",
+      "Real-time processing with streaming pipeline",
+      "Interactive layer control for detailed analysis"
+    ],
+    "indices": {
+      "title": "Parameters Explained",
+      "items": [
+        {
+          "name": "N",
+          "fullName": "Nitrogen Content",
+          "description": "Essential nutrient for plant growth. Higher values indicate nitrogen-rich soil."
+        },
+        {
+          "name": "P",
+          "fullName": "Phosphorus Content",
+          "description": "Critical for root development and energy transfer in plants."
+        },
+        {
+          "name": "K",
+          "fullName": "Potassium Content",
+          "description": "Important for water regulation and disease resistance in plants."
+        },
+        {
+          "name": "pH",
+          "fullName": "Soil Acidity/Alkalinity",
+          "description": "Measures soil pH level. Optimal range varies by crop type."
+        },
+        {
+          "name": "SOM",
+          "fullName": "Soil Organic Matter",
+          "description": "Percentage of organic matter in soil. Higher values indicate better soil fertility."
+        }
+      ]
+    },
+    "tips": [
+      "Organic soils typically show higher SOM values (>3%) and balanced NPK ratios.",
+      "Compare results across seasons to understand soil dynamics.",
+      "Use smaller ROIs for more accurate local soil classification."
+    ]
+  },
+
+  "dataviz": {
+    "title": "Fertilization Monitoring",
+    "description": "Visualize and analyze soil nutrient data from field measurements to monitor fertilization effectiveness over time.",
+    "howToUse": {
+      "intro": "Follow these steps to visualize fertilization data:",
+      "steps": [
+        {
+          "title": "Prepare Spreadsheet",
+          "description": "Create a Google Sheets document with columns: Timestamp, Nitrogen, Phosphorus, Potassium, Latitude, Longitude."
+        },
+        {
+          "title": "Share Spreadsheet",
+          "description": "Set your Google Sheet to 'Anyone with the link can view' for the system to access it."
+        },
+        {
+          "title": "Enter URL",
+          "description": "Paste the Google Sheets URL into the input field in the left panel."
+        },
+        {
+          "title": "Collect Data",
+          "description": "Click 'Collect' to fetch and process your fertilization records."
+        },
+        {
+          "title": "View Map Points",
+          "description": "Sampling locations appear as markers on the map. Click markers to view details."
+        },
+        {
+          "title": "Analyze Trends",
+          "description": "Use the chart panel to visualize NPK trends over time and identify patterns."
+        },
+        {
+          "title": "Export Data",
+          "description": "Click 'Export' to download processed data for further analysis."
+        }
+      ]
+    },
+    "features": [
+      "Direct Google Sheets integration for easy data import",
+      "Automatic coordinate validation and data cleaning",
+      "Time-series visualization of NPK nutrients",
+      "Geographic mapping of sampling points",
+      "Interactive data table with sorting and filtering",
+      "CSV export for external analysis tools"
+    ],
+    "dataFormat": {
+      "title": "Required Spreadsheet Format",
+      "columns": [
+        {
+          "name": "Timestamp",
+          "format": "DD/MM/YYYY HH:MM:SS",
+          "description": "Date and time of measurement"
+        },
+        {
+          "name": "Nitrogen",
+          "format": "Numeric (mg/kg or ppm)",
+          "description": "Nitrogen content reading"
+        },
+        {
+          "name": "Phosphorus",
+          "format": "Numeric (mg/kg or ppm)",
+          "description": "Phosphorus content reading"
+        },
+        {
+          "name": "Potassium",
+          "format": "Numeric (mg/kg or ppm)",
+          "description": "Potassium content reading"
+        },
+        {
+          "name": "Latitude",
+          "format": "Decimal degrees",
+          "description": "GPS latitude of sampling point"
+        },
+        {
+          "name": "Longitude",
+          "format": "Decimal degrees",
+          "description": "GPS longitude of sampling point"
+        }
+      ]
+    },
+    "tips": [
+      "Ensure all coordinates are in decimal degree format (e.g., -7.250, 110.400).",
+      "Remove any empty rows or invalid entries from your spreadsheet before importing.",
+      "Use consistent date/time formatting throughout your dataset.",
+      "Regular sampling intervals provide better trend analysis."
+    ]
+  }
+}

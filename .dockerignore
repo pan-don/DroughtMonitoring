@@ -1,0 +1,96 @@
+# ============================================================================
+# .dockerignore - Minimize Docker image size by excluding unnecessary files
+# ============================================================================
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Documentation and markdown (not needed in container)
+*.md
+docs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Jupyter notebooks and checkpoints
+*.ipynb
+.ipynb_checkpoints/
+
+# Large data files and datasets (only keep model files that are copied explicitly)
+data/
+*.csv
+*.xlsx
+*.xls
+*.parquet
+
+# Environment files with secrets (use HF Secrets instead)
+.env
+.env.*
+utils/secreet_keys.json
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Package manager files (already installed from requirements.txt)
+poetry.lock
+Pipfile.lock
+package-lock.json
+yarn.lock
+
+# Docker files (don't need these inside the container)
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# README and other documentation
+README.md
+LICENSE
+CHANGELOG.md
+local_running.md
