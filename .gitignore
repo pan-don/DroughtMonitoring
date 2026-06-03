@@ -9,3 +9,4 @@ wheels/
 # Virtual environments
 .venv
 secret-key.json
+.env

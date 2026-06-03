@@ -38,16 +38,16 @@ Sistem ini dirancang untuk mengambil dan memproses data citra satelit (Landsat) 
 
 ---
 
-## 3. Panduan Integrasi ke Sistem Lain (Embedding)
+## 3. Panduan Integrasi ke Sistem Lain
 
 Karena aplikasi ini dibangun dengan arsitektur **Client-Server (REST API)**, maka memisahkan atau menggunakan ulang backend-nya (*Headless Backend*) ke *platform* / sistem eksternal lain sangat mungkin dilakukan.
 
 ### A. Menggunakan Endpoint via HTTP Requests
-Jika sistem eksternal Anda (misal dashboard berbasis React/Vue, Mobile App, atau layanan server lainnya) ingin menampilkan fitur prediksi kekeringan:
+Jika sistem eksternal (misal dashboard berbasis React/Vue, Mobile App, atau layanan server lainnya) ingin menampilkan fitur prediksi kekeringan:
 
-1. **Pastikan Backend Berjalan dan Dapat Diakses**: Deployment Flask `app.py` di server yang dapat dijangkau oleh jaringan Anda (misal: menggunakan Nginx/Gunicorn/Docker atau Cloud Run).
+1. **Pastikan Backend Berjalan dan Dapat Diakses**: Deployment Flask `app.py` di server yang dapat dijangkau oleh jaringan (misal: menggunakan Nginx/Gunicorn/Docker atau Cloud Run).
 2. **Kirim POST Request ke API Endpoints**:
-   Anda hanya perlu mengirim Payload JSON (GeoJSON) ke endpoint yang tersedia.
+   hanya perlu mengirim Payload JSON (GeoJSON) ke endpoint yang tersedia.
    Contoh alur menggunakan JS/Python (Pseudo-Code):
    ```javascript
    // 1. Dapatkan daftar citra yang tersedia di wilayah tersebut
@@ -73,7 +73,7 @@ Jika sistem eksternal Anda (misal dashboard berbasis React/Vue, Mobile App, atau
    ```
 
 ### B. Embedding Tampilan Frontend Secara Langsung (Iframe)
-Jika Anda hanya ingin menampilkan antarmuka bawaan secara utuh di halaman website eksternal, Anda bisa menggunakan `<iframe>`.
+Jika hanya ingin menampilkan antarmuka bawaan secara utuh di halaman website eksternal bisa menggunakan `<iframe>`.
 ```html
 <iframe
     src="https://your-drought-monitoring-url.com"
@@ -85,6 +85,6 @@ Jika Anda hanya ingin menampilkan antarmuka bawaan secara utuh di halaman websit
 ```
 
 ### Tips & Peringatan untuk Produksi / Embed:
-- **CORS (Cross-Origin Resource Sharing)**: Pastikan Anda menyesuaikan kebijakan CORS di `app.py` jika backend dan sistem/frontend eksternal Anda berbeda domain. Secara default, pustaka `flask-cors` memungkinkan konfigurasi domain spesifik yang diizinkan untuk mengirim *request*.
-- **Timeout GEE**: Permintaan luas area (ROI) yang terlalu masif bisa menimbulkan proses yang cukup berat dari Google Earth Engine, dan rawan terkena HTTP *timeout error* jika sistem Anda tidak menanganinya secara *asynchronous* dengan baik. Batasi area maksimal (luas poligon) di sisi UI klien baru.
-- **Kredensial**: Jaga API Anda dengan keamanan yang tepat (seperti API Keys / Token JWT) di *production* untuk mencegah permintaan berlebihan dari pihak tidak sah yang dapat menghabiskan kuota GCP Anda.
+- **CORS (Cross-Origin Resource Sharing)**: Pastikan menyesuaikan kebijakan CORS di `app.py` jika backend dan sistem/frontend eksternal berbeda domain. Secara default, pustaka `flask-cors` memungkinkan konfigurasi domain spesifik yang diizinkan untuk mengirim *request*.
+- **Timeout GEE**: Permintaan luas area (ROI) yang terlalu masif bisa menimbulkan proses yang cukup berat dari Google Earth Engine, dan rawan terkena HTTP *timeout error* jika sistem tidak menanganinya secara *asynchronous* dengan baik. Batasi area maksimal (luas poligon) di sisi UI klien baru.
+- **Kredensial**: Jaga API dengan keamanan yang tepat (seperti API Keys / Token JWT) di *production* untuk mencegah permintaan berlebihan dari pihak tidak sah yang dapat menghabiskan kuota GCP.
